@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Self Attendance Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Using Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="appContainer" class="app-container">
+
+        <!-- Login Section (from your original HTML, adapted) -->
+        <div id="loginSection" class="screen active">
+            <div class="login-content">
+                <h2>Welcome to Self Attendance</h2>
+                <input type="email" id="loginGmail" placeholder="Enter Gmail">
+                <button id="loginButton" class="btn-primary">Login</button>
+            </div>
+        </div>
+
+        <!-- Main Application (Hidden initially after login) -->
+        <div id="mainApp" class="screen hidden">
+            <!-- Navigation Drawer -->
+            <nav class="side-nav" id="sideNav">
+                <div class="nav-header">
+                    <div class="nav-logo-text">SELF<br>ATTENDANCE</div>
+                </div>
+                <button class="close-nav-btn" id="closeNavBtn" aria-label="Close navigation menu">×</button>
+                <div class="nav-section">
+                    <p class="nav-section-title">Features</p>
+                    <ul>
+                        <li><a href="#" id="navQuickAttendance"><i class="fas fa-list-check"></i> Quick Attendance (View)</a></li>
+                        <li><a href="#" id="navSearchAttendance"><i class="fas fa-magnifying-glass"></i> Search (N/A)</a></li>
+                        <li><a href="#" id="navBackupRestore"><i class="fas fa-cloud-arrow-up"></i> Backup/Restore (N/A)</a></li>
+                        <li><a href="#" id="navReports"><i class="fas fa-file-lines"></i> Reports (PDF/EXCEL)</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <p class="nav-section-title">User</p>
+                    <ul>
+                        <li id="loggedInUserDisplay" style="padding: 10px 25px; color: #ccc; font-size:0.9em;">Not logged in</li>
+                        <li><a href="#" id="logoutButtonNav"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+                 <div class="nav-section">
+                    <p class="nav-section-title">More</p>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-cog"></i> Settings (N/A)</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Send Feedback (N/A)</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="nav-overlay" id="navOverlay"></div>
+
+            <!-- Main Screen for Member/Subject List -->
+            <div class="main-content-area screen active-screen-view" id="memberListScreen">
+                <header class="app-header">
+                    <button class="icon-btn" id="menuBtn" aria-label="Open navigation menu"><i class="fas fa-bars"></i></button>
+                    <h1 class="app-title">Members</h1>
+                    <button class="icon-btn" id="addMemberBtnHeader" aria-label="Add new member"><i class="fas fa-plus"></i></button>
+                    <button class="icon-btn" id="moreOptionsMemberListBtn" aria-label="More options"><i class="fas fa-ellipsis-v"></i></button>
+                </header>
+                <div class="search-container">
+                    <input type="text" id="memberSearchInput" placeholder="Search members...">
+                    <i class="fas fa-magnifying-glass search-icon-input"></i>
+                </div>
+                <div class="subject-list" id="memberTable">
+                    <!-- Members will be populated here -->
+                </div>
+                 <!-- Add Member Modal (adapted from your add subject modal) -->
+                <div class="modal" id="addMemberModal">
+                    <div class="modal-content">
+                        <div class="modal-header-flex">
+                            <i class="fas fa-user-plus modal-icon-title"></i>
+                            <h3>Add New Member</h3>
+                        </div>
+                        <input type="text" id="newMemberUsername" placeholder="Username" class="modal-input-field">
+                        <input type="text" id="newMemberMobile" placeholder="Mobile Number" class="modal-input-field">
+                        <input type="number" id="newMemberSalary" placeholder="Salary" class="modal-input-field">
+                        <div class="modal-actions">
+                            <button id="cancelAddMemberBtn" class="btn-dialog btn-dialog-cancel">CANCEL</button>
+                            <button id="confirmAddMemberBtn" class="btn-dialog btn-dialog-confirm">ADD MEMBER</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-menu" id="memberListOptionsMenu">
+                    <ul>
+                        <li><a href="#" id="setAllPresentToday">Set all Present Today (N/A)</a></li>
+                        <li><a href="#" id="setAllAbsentToday">Set all Absent Today (N/A)</a></li>
+                        <!-- Add other general options if needed -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Attendance View Screen -->
+            <div class="main-content-area screen hidden" id="attendanceViewScreen">
+                <header class="app-header">
+                    <button class="icon-btn" id="backToMemberListBtn" aria-label="Go back"><i class="fas fa-arrow-left"></i></button>
+                    <h1 class="app-title" id="attendanceMemberName">MEMBER NAME</h1>
+                    <button class="icon-btn" id="moreOptionsAttendanceBtn" aria-label="More options for member"><i class="fas fa-ellipsis-v"></i></button>
+                </header>
+                <div class="month-navigation">
+                    <button id="prevMonthBtn" class="btn-month-nav">< PREV</button>
+                    <span id="currentMonthYear">MONTH YEAR</span>
+                    <button id="nextMonthBtn" class="btn-month-nav">NEXT ></button>
+                </div>
+                <div class="calendar-container">
+                    <div class="calendar-header-days">
+                        <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+                <div class="attendance-summary-container">
+                    <div class="attendance-legend">
+                        <span><span class="legend-color present"></span> Present: <span id="presentCount">0</span></span>
+                        <span><span class="legend-color absent"></span> Absent: <span id="absentCount">0</span></span>
+                        <span><span class="legend-color half-day"></span> Half Days: <span id="halfDayCount">0</span></span>
+                        <span><span class="legend-color leave"></span> Leave: <span id="leaveCount">0</span></span> <!-- Added Leave -->
+                    </div>
+                    <div class="ot-summary">
+                        OT Hours: <span id="otHours">0</span> | Night Shifts: <span id="nightShiftCountSummary">0</span>
+                    </div>
+                    <div id="salaryResultsDisplay" style="margin-top: 10px; font-weight: bold;">
+                        <!-- Salary calculation results will appear here -->
+                    </div>
+                    <div class="action-buttons-summary">
+                        <button id="saveAttendanceBtnSummary" class="btn-primary small">Save Attendance</button>
+                        <button id="calculateSalaryBtnSummary" class="btn-secondary small">Calculate Salary</button>
+                    </div>
+                </div>
+                <!-- Day Action Popup -->
+                <div class="popup-menu" id="dayActionPopup">
+                    <ul>
+                        <li><a href="#" data-action="Present"><i class="fas fa-check"></i> Present</a></li>
+                        <li><a href="#" data-action="Absent"><i class="fas fa-times"></i> Absent</a></li>
+                        <li><a href="#" data-action="Half Day"><i class="far fa-calendar-alt"></i> Half Day</a></li>
+                        <li><a href="#" data-action="Leave"><i class="fas fa-plane-departure"></i> Leave</a></li>
+                        <li><hr style="border-color: #555; margin: 5px 0;"></li>
+                        <li><a href="#" data-action="toggle-night"><i class="fas fa-moon"></i> Toggle Night Shift</a></li>
+                        <li><a href="#" data-action="set-ot"><i class="far fa-clock"></i> Set OT Hours</a></li>
+                         <li><hr style="border-color: #555; margin: 5px 0;"></li>
+                        <li>
+                            <label class="clear-day-label">
+                                <input type="checkbox" id="clearDayCheckbox" data-action="clear" /> Clear Day
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                 <!-- Attendance Options Menu (for salary, PDF etc.) -->
+                <div class="popup-menu" id="attendanceMoreOptionsMenu">
+                    <ul>
+                        <li><a href="#" id="menuCalculateSalary">Calculate Salary</a></li>
+                        <li><a href="#" id="menuExportPDF">Export PDF Report</a></li>
+                        <!-- Add other member-specific options if needed -->
+                    </ul>
+                </div>
+            </div>
+             <!-- Ad Banner (Optional) -->
+            <div class="ad-banner-placeholder">
+                <!-- Ad content can go here if needed -->
+            </div>
+        </div> <!-- End #mainApp -->
+    </div> <!-- End #appContainer -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
